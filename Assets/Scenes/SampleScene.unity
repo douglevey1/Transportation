@@ -242,9 +242,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cubePrefab: {fileID: 8298295987309818224, guid: 8c5c5220c0ea4e944aa4371c5b95dc91,
     type: 3}
+  cubePos: {x: 0, y: 0, z: 0}
   xPos: 0
   yPos: 0
-  cubePos: {x: 0, y: 0, z: 0}
 --- !u!4 &935645619
 Transform:
   m_ObjectHideFlags: 0
@@ -336,7 +336,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -14}
+  m_LocalPosition: {x: 0, y: 1, z: -16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
