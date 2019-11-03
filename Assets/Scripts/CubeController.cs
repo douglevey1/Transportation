@@ -43,6 +43,10 @@ public class CubeController : MonoBehaviour
         {
             gameObject.GetComponent<Renderer>().material.color = Color.red;
         }
+        else if(gameObject == GameController.unloadCube && gameObject != GameController.activeCube)
+        {
+            gameObject.GetComponent<Renderer>().material.color = Color.black;
+        }
         else
         {
             gameObject.GetComponent<Renderer>().material.color = Color.white;

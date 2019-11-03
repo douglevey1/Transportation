@@ -6,12 +6,15 @@ public class GameController : MonoBehaviour
 {
     public GameObject cubePrefab;
     public static GameObject activeCube;
+    public static GameObject unloadCube;
     public Vector3 cubePos;
     public float xPos, yPos;
     public static GameObject[,] cubeGrid;
     public static int gridX, gridY;
     public static bool planeClicked = false;
     int setX = 0, setY = 0;
+    double turnDuration = 1.5, turnTimed = 0;
+    int cargoStored = 0, cargoGained = 10, score = 0;
 
     public void Start()
     {
@@ -37,13 +40,39 @@ public class GameController : MonoBehaviour
                 setX = 0;
                 setY++;
             }
-            //sets the first cube at position 0, 0 to be the active/red cube
-            activeCube = cubeGrid[0, 0];
+            setCubes();
         }
+    }
+
+    void setCubes()
+    {
+        //For some reason trying to set both colors here stops the program from spawning more than one cube
+        activeCube = cubeGrid[0, 0];
+        //activeCube.GetComponent<Renderer>().material.color = Color.red;
+        unloadCube = cubeGrid[15, 8];
+        //unloadCube.GetComponent<Renderer>().material.color = Color.black;
+    }
+    
+    void takeTurn()
+    {
+        if(activeCube == cubeGrid[0, 0] && cargoStored < 90)
+        {
+            cargoStored += cargoGained;
+        }
+        else if(activeCube == unloadCube)
+        {
+            score += cargoStored;
+            cargoStored = 0;
+        }
+        print("You are currently holding " + cargoStored + " tons of cargo.  Your score is " + score + ".");
     }
 
     public void Update()
     {
-        
+        if(Time.time >= turnTimed)
+        {
+            turnTimed += turnDuration;
+            takeTurn();
+        }
     }
 }
