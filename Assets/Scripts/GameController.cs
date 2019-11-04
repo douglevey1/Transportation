@@ -13,26 +13,24 @@ public class GameController : MonoBehaviour
     public static int gridX, gridY;
     public static bool planeClicked = false;
     int setX = 0, setY = 0;
-    double turnDuration = 1.5, turnTimed = 0;
+    double turnDuration = 1.5, turnTimer = 1.5;
     int cargoStored = 0, cargoGained = 10, score = 0;
+    int activeX = 0, activeY = 0;
+    int unloadX = 15, unloadY = 8;
 
     public void Start()
     {
-        //Grid size
         gridX = 16;
         gridY = 9;
         cubeGrid = new GameObject[gridX, gridY];
-        //Physical cube positions
         xPos = -15;
         yPos = 9;
-        //Spawns cubes and assigns them to each space in the cubeGrid array
         for (int x = 0; x < (gridX * gridY); x++)
         {
             cubePos = new Vector3(xPos, yPos, 0);
             cubeGrid[setX, setY] = Instantiate(cubePrefab, cubePos, Quaternion.identity);
             xPos += 2;
             setX++;
-            //once cubes reach the end of the screen, the position is set back to the beginning
             if(xPos > 15)
             {
                 xPos = -15;
@@ -46,11 +44,8 @@ public class GameController : MonoBehaviour
 
     void setCubes()
     {
-        //For some reason trying to set both colors here stops the program from spawning more than one cube
-        activeCube = cubeGrid[0, 0];
-        //activeCube.GetComponent<Renderer>().material.color = Color.red;
-        unloadCube = cubeGrid[15, 8];
-        //unloadCube.GetComponent<Renderer>().material.color = Color.black;
+        activeCube = cubeGrid[activeX, activeY];
+        unloadCube = cubeGrid[unloadX, unloadY];
     }
     
     void takeTurn()
@@ -69,10 +64,50 @@ public class GameController : MonoBehaviour
 
     public void Update()
     {
-        if(Time.time >= turnTimed)
+        if(Time.time >= turnTimer)
         {
-            turnTimed += turnDuration;
+            turnTimer += turnDuration;
             takeTurn();
         }
+        if(planeClicked == true)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("w"))
+            {
+                activeY--;
+                planeClicked = false;
+            }
+            else if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown("a"))
+            {
+                activeX--;
+                planeClicked = false;
+            }
+            else if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown("s"))
+            {
+                activeY++;
+                planeClicked = false;
+            }
+            else if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown("d"))
+            {
+                activeX++;
+                planeClicked = false;
+            }
+        }
+        if(activeX > 15)
+        {
+            activeX = 15;
+        }
+        else if(activeX < 0)
+        {
+            activeX = 0;
+        }
+        if(activeY > 8)
+        {
+            activeY = 8;
+        }
+        else if(activeY < 0)
+        {
+            activeY = 0;
+        }
+        activeCube = cubeGrid[activeX, activeY];
     }
 }
