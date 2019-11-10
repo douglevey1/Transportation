@@ -6,7 +6,8 @@ public class CubeController : MonoBehaviour
 {
     public Vector3 scaleUp;
     public Vector3 scaleNorm;
-    public int upX = 1, upY = 1, upZ = 1;
+    public int thisX, thisY;
+    public int upX = 2, upY = 2, upZ = 2;
     public int normX = 1, normY = 1, normZ = 1;
     void Start()
     {
@@ -18,13 +19,17 @@ public class CubeController : MonoBehaviour
         if (gameObject == GameController.activeCube && GameController.planeClicked == false)
         {
             GameController.planeClicked = true;
-            transform.localScale += scaleUp;
         }
-        else
+        else if (gameObject == GameController.activeCube && GameController.planeClicked == true)
         {
             GameController.planeClicked = false;
-            GameController.activeCube.transform.localScale = scaleNorm;
             transform.localScale = scaleNorm;
+        }
+        else if (gameObject != GameController.activeCube && GameController.planeClicked == true)
+        {
+            GameController.targetCube = gameObject;
+            GameController.targetX = thisX;
+            GameController.targetY = thisY;
         }
     }
     void Update()
@@ -32,10 +37,19 @@ public class CubeController : MonoBehaviour
         if(gameObject == GameController.activeCube)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.red;
+            if(GameController.planeClicked == true)
+            {
+                transform.localScale = scaleUp;
+            }
         }
         else if(gameObject == GameController.unloadCube && gameObject != GameController.activeCube)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.black;
+            transform.localScale = scaleNorm;
+        }
+        else if(gameObject == GameController.targetCube && gameObject != GameController.activeCube)
+        {
+            gameObject.GetComponent<Renderer>().material.color = Color.yellow;
             transform.localScale = scaleNorm;
         }
         else

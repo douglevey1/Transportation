@@ -7,16 +7,17 @@ public class GameController : MonoBehaviour
     public GameObject cubePrefab;
     public static GameObject activeCube;
     public static GameObject unloadCube;
+    public static GameObject targetCube;
     public Vector3 cubePos;
     public float xPos, yPos;
     public static GameObject[,] cubeGrid;
     public static int gridX, gridY;
     public static bool planeClicked = false;
-    int setX = 0, setY = 0;
     double turnDuration = 1.5, turnTimer = 1.5;
     int cargoStored = 0, cargoGained = 10, score = 0;
     int activeX = 0, activeY = 0;
     int unloadX = 15, unloadY = 8;
+    public static int targetX = 0, targetY = 0;
 
     public void Start()
     {
@@ -25,27 +26,26 @@ public class GameController : MonoBehaviour
         cubeGrid = new GameObject[gridX, gridY];
         xPos = -15;
         yPos = 9;
-        for (int x = 0; x < (gridX * gridY); x++)
+        for (int y = 0; y < gridY; y++)
         {
-            cubePos = new Vector3(xPos, yPos, 0);
-            cubeGrid[setX, setY] = Instantiate(cubePrefab, cubePos, Quaternion.identity);
-            xPos += 2;
-            setX++;
-            if(xPos > 15)
+            for (int x = 0; x < gridX; x++)
             {
-                xPos = -15;
-                yPos -= 2;
-                setX = 0;
-                setY++;
+                cubePos = new Vector3(xPos, yPos, 0);
+                cubeGrid[x, y] = Instantiate(cubePrefab, cubePos, Quaternion.identity);
+                cubeGrid[x, y].GetComponent<CubeController>().thisX = x;
+                cubeGrid[x, y].GetComponent<CubeController>().thisY = y;
+                xPos += 2;
             }
-            setCubes();
+            xPos = -15;
+            yPos -= 2;
         }
+        setCubes();
     }
-
     void setCubes()
     {
         activeCube = cubeGrid[activeX, activeY];
         unloadCube = cubeGrid[unloadX, unloadY];
+        targetCube = cubeGrid[targetX, targetY];
     }
     
     void takeTurn()
@@ -59,6 +59,26 @@ public class GameController : MonoBehaviour
             score += cargoStored;
             cargoStored = 0;
         }
+        if (planeClicked == true && activeCube != targetCube)
+        {
+            if (targetY < activeY)
+            {
+                activeY--;
+            }
+            else if (targetY > activeY)
+            {
+                activeY++;
+            }
+            if (targetX < activeX)
+            {
+                activeX--;
+            }
+            else if (targetX > activeX)
+            {
+                activeX++;
+            }
+            activeCube = cubeGrid[activeX, activeY];
+        }
         print("You are currently holding " + cargoStored + " tons of cargo.  Your score is " + score + ".");
     }
 
@@ -69,45 +89,5 @@ public class GameController : MonoBehaviour
             turnTimer += turnDuration;
             takeTurn();
         }
-        if(planeClicked == true)
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("w"))
-            {
-                activeY--;
-                planeClicked = false;
-            }
-            else if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown("a"))
-            {
-                activeX--;
-                planeClicked = false;
-            }
-            else if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown("s"))
-            {
-                activeY++;
-                planeClicked = false;
-            }
-            else if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown("d"))
-            {
-                activeX++;
-                planeClicked = false;
-            }
-        }
-        if(activeX > 15)
-        {
-            activeX = 15;
-        }
-        else if(activeX < 0)
-        {
-            activeX = 0;
-        }
-        if(activeY > 8)
-        {
-            activeY = 8;
-        }
-        else if(activeY < 0)
-        {
-            activeY = 0;
-        }
-        activeCube = cubeGrid[activeX, activeY];
     }
 }
